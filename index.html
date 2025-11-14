@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сырник Кликер</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Rubik', sans-serif;
+            text-align: center;
+            background-color: white;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #2c3e50;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+        
+        .menu-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Rubik', sans-serif;
+            font-weight: 500;
+        }
+        
+        .menu-button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+        }
+        
+        .menu-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .cheesecoin-counter {
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            font-family: 'Rubik', sans-serif;
+        }
+        
+        .counter {
+            font-size: 48px;
+            margin: 30px 0;
+            color: #2c3e50;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            font-family: 'Rubik', sans-serif;
+        }
+        
+        .click-button {
+            width: 220px;
+            height: 220px;
+            cursor: pointer;
+            margin: 30px auto;
+            border: 4px solid #FF9800;
+            display: block;
+            border-radius: 20px;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            background: white;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        
+        .click-button:hover {
+            border-color: #F57C00;
+            transform: scale(1.05);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+        }
+        
+        .click-button:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .click-button img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 16px;
+        }
+        
+        .upgrade-button {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 30px auto;
+            display: block;
+            border-radius: 25px;
+            outline: none;
+            width: 280px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Rubik', sans-serif;
+            font-weight: 600;
+        }
+        
+        .upgrade-button:hover:not(:disabled) {
+            background: linear-gradient(135deg, #1976D2, #1565C0);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+        }
+        
+        .upgrade-button:active:not(:disabled) {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .upgrade-button:disabled {
+            background: linear-gradient(135deg, #9E9E9E, #757575);
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .stats {
+            margin-top: 20px;
+            color: #2c3e50;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            width: 280px;
+            border: 2px solid #e9ecef;
+            font-family: 'Rubik', sans-serif;
+        }
+        
+        .stats p {
+            margin: 8px 0;
+            font-weight: 500;
+        }
+        
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 320px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .menu-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+            text-align: left;
+        }
+        
+        .menu-item {
+            padding: 15px;
+            border-bottom: 2px solid #f1f3f4;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+        
+        .menu-item:hover {
+            background: #f8f9fa;
+            transform: translateX(5px);
+        }
+        
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        
+        .reset-button {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            font-family: 'Rubik', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+        }
+        
+        .reset-button:hover {
+            background: #cc0000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+        }
+        
+        .reset-button:active {
+            transform: translateY(0);
+        }
+        
+        .close-button {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            font-family: 'Rubik', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+        }
+        
+        .close-button:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+        }
+        
+        .close-button:active {
+            transform: translateY(0);
+        }
+        
+        /* Убираем выделение при клике */
+        img {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        /* Полноэкранный режим */
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Индикатор полноэкранного режима */
+        .fullscreen-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            z-index: 1000;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="fullscreen-indicator" id="fullscreenIndicator">Полный экран</div>
+    
+    <div class="container">
+        <div class="header">
+            <button class="menu-button" id="menuButton">Меню</button>
+            <div class="cheesecoin-counter">Сырникоины: <span id="cheesecoinCounter">0</span></div>
+        </div>
+        
+        <div class="counter" id="counter">0</div>
+        
+        <div class="click-button" id="clickButton">
+            <img src="bublick.jpg" alt="Сырник">
+        </div>
+        
+        <button class="upgrade-button" id="upgradeButton">
+            Улучшить (стоимость: 10)
+        </button>
+        
+        <div class="stats">
+            <p>Кликов за клик: <span id="clicksPerClick">1</span></p>
+            <p>Уровень улучшения: <span id="upgradeLevel">1</span></p>
+        </div>
+
+        <!-- Модальное окно -->
+        <div class="modal" id="modal">
+            <div class="modal-content">
+                <h3 style="margin-bottom: 20px; font-family: 'Rubik', sans-serif; color: #2c3e50;">Меню</h3>
+                <ul class="menu-list">
+                    <li class="menu-item">Настройки</li>
+                    <li class="menu-item">Достижения</li>
+                    <li class="menu-item">Статистика</li>
+                    <li class="menu-item">Помощь</li>
+                    <li class="menu-item">О программе</li>
+                </ul>
+                
+                <button class="reset-button" id="resetButton">Сбросить все</button>
+                <button class="close-button" id="closeModal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Переменные состояния
+        let clicks = 0;
+        let clicksPerClick = 1;
+        let upgradeLevel = 1;
+        let upgradeCost = 10;
+        let cheesecoins = 0;
+        let totalClicks = 0;
+        let isFullscreen = false;
+
+        // Элементы DOM
+        const counterElement = document.getElementById('counter');
+        const clickButton = document.getElementById('clickButton');
+        const upgradeButton = document.getElementById('upgradeButton');
+        const clicksPerClickElement = document.getElementById('clicksPerClick');
+        const upgradeLevelElement = document.getElementById('upgradeLevel');
+        const cheesecoinCounter = document.getElementById('cheesecoinCounter');
+        const menuButton = document.getElementById('menuButton');
+        const modal = document.getElementById('modal');
+        const closeModal = document.getElementById('closeModal');
+        const resetButton = document.getElementById('resetButton');
+        const fullscreenIndicator = document.getElementById('fullscreenIndicator');
+
+        // Проверка полноэкранного режима
+        function checkFullscreen() {
+            isFullscreen = !!(document.fullscreenElement || 
+                            document.webkitFullscreenElement || 
+                            document.mozFullScreenElement || 
+                            document.msFullscreenElement);
+            
+            if (isFullscreen) {
+                fullscreenIndicator.style.display = 'block';
+            } else {
+                fullscreenIndicator.style.display = 'none';
+            }
+            return isFullscreen;
+        }
+
+        // Вход в полноэкранный режим
+        function enterFullscreen() {
+            const elem = document.documentElement;
+            
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+        }
+
+        // Выход из полноэкранного режима
+        function exitFullscreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+
+        // Переключение полноэкранного режима
+        function toggleFullscreen() {
+            if (!checkFullscreen()) {
+                enterFullscreen();
+            }
+        }
+
+        // Обработчики событий полноэкранного режима
+        document.addEventListener('fullscreenchange', checkFullscreen);
+        document.addEventListener('webkitfullscreenchange', checkFullscreen);
+        document.addEventListener('mozfullscreenchange', checkFullscreen);
+        document.addEventListener('MSFullscreenChange', checkFullscreen);
+
+        // Автоматический вход в полноэкранный режим при любом клике
+        function setupFullscreenOnClick() {
+            document.addEventListener('click', function(event) {
+                // Не активируем полноэкранный режим при клике на кнопку сброса
+                if (event.target.id !== 'resetButton' && !checkFullscreen()) {
+                    setTimeout(toggleFullscreen, 100);
+                }
+            }, { once: false });
+        }
+
+        // Загрузка сохраненных данных
+        function loadGame() {
+            const savedGame = localStorage.getItem('cheesecakeClicker');
+            if (savedGame) {
+                const gameData = JSON.parse(savedGame);
+                clicks = gameData.clicks || 0;
+                clicksPerClick = gameData.clicksPerClick || 1;
+                upgradeLevel = gameData.upgradeLevel || 1;
+                upgradeCost = gameData.upgradeCost || 10;
+                cheesecoins = gameData.cheesecoins || 0;
+                totalClicks = gameData.totalClicks || 0;
+            }
+        }
+
+        // Сохранение игры
+        function saveGame() {
+            const gameData = {
+                clicks,
+                clicksPerClick,
+                upgradeLevel,
+                upgradeCost,
+                cheesecoins,
+                totalClicks
+            };
+            localStorage.setItem('cheesecakeClicker', JSON.stringify(gameData));
+        }
+
+        // Сброс игры
+        function resetGame() {
+            if (confirm('Вы уверены, что хотите сбросить весь прогресс? Это действие нельзя отменить.')) {
+                clicks = 0;
+                clicksPerClick = 1;
+                upgradeLevel = 1;
+                upgradeCost = 10;
+                cheesecoins = 0;
+                totalClicks = 0;
+                
+                localStorage.removeItem('cheesecakeClicker');
+                updateUI();
+                modal.style.display = 'none';
+                
+                alert('Игра сброшена!');
+            }
+        }
+
+        // Функция обновления интерфейса
+        function updateUI() {
+            counterElement.textContent = Math.floor(clicks);
+            clicksPerClickElement.textContent = clicksPerClick;
+            upgradeLevelElement.textContent = upgradeLevel;
+            cheesecoinCounter.textContent = cheesecoins;
+            upgradeButton.textContent = `Улучшить (стоимость: ${upgradeCost})`;
+            
+            upgradeButton.disabled = clicks < upgradeCost;
+            saveGame();
+        }
+
+        // Обработчик клика по кнопке
+        clickButton.addEventListener('click', function() {
+            clicks += clicksPerClick;
+            totalClicks++;
+            
+            // Бонус каждые 1000 кликов
+            if (totalClicks % 1000 === 0) {
+                cheesecoins += 5;
+            }
+            
+            updateUI();
+        });
+
+        // Обработчик улучшения
+        upgradeButton.addEventListener('click', function() {
+            if (clicks >= upgradeCost) {
+                clicks -= upgradeCost;
+                clicksPerClick *= 2;
+                upgradeLevel++;
+                upgradeCost = Math.floor(upgradeCost * 2.5);
+                updateUI();
+            }
+        });
+
+        // Открытие модального окна
+        menuButton.addEventListener('click', function() {
+            modal.style.display = 'flex';
+        });
+
+        // Закрытие модального окна
+        closeModal.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        // Сброс игры
+        resetButton.addEventListener('click', resetGame);
+
+        // Закрытие модального окна при клике вне его
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Убираем выделение при клике
+        clickButton.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+        });
+
+        // Инициализация игры
+        loadGame();
+        updateUI();
+        
+        // Настройка автоматического полноэкранного режима
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                if (!checkFullscreen()) {
+                    enterFullscreen();
+                }
+            }, 500);
+            
+            setupFullscreenOnClick();
+        });
+
+        // Периодическая проверка полноэкранного режима
+        setInterval(checkFullscreen, 1000);
+    </script>
+</body>
+</html>
