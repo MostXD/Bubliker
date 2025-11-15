@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Топы - Сырник Кликер</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Rubik', sans-serif;
+            background-color: white;
+            padding: 20px;
+            color: #2c3e50;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .back-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            font-family: 'Rubik', sans-serif;
+            font-weight: 500;
+        }
+        
+        .back-button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+        }
+        
+        .your-stats {
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .title-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 42px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 18px;
+        }
+        
+        .leaderboard-card {
+            background: white;
+            border: 3px solid #e9ecef;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .leaderboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #FF9800;
+            margin-bottom: 20px;
+        }
+        
+        .leaderboard-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #FF9800;
+        }
+        
+        .refresh-button {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: 'Rubik', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .refresh-button:hover {
+            background: #1976D2;
+            transform: scale(1.05);
+        }
+        
+        .rank-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .rank-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .rank-item.top1 {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            border-left-color: #ffd700;
+        }
+        
+        .rank-item.top2 {
+            background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
+            border-left-color: #c0c0c0;
+        }
+        
+        .rank-item.top3 {
+            background: linear-gradient(135deg, #cd7f32, #e3a857);
+            border-left-color: #cd7f32;
+        }
+        
+        .rank-item.you {
+            border: 3px solid #4CAF50;
+            background: #e8f5e9;
+        }
+        
+        .rank-number {
+            font-size: 24px;
+            font-weight: 700;
+            width: 50px;
+            text-align: center;
+            color: #2c3e50;
+        }
+        
+        .rank-medal {
+            font-size: 32px;
+            width: 50px;
+            text-align: center;
+        }
+        
+        .player-info {
+            flex: 1;
+            margin-left: 15px;
+        }
+        
+        .player-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 3px;
+            color: #2c3e50;
+        }
+        
+        .player-character {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        
+        .player-stats {
+            text-align: right;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #FF9800;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+        
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 15px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            font-size: 18px;
+        }
+        
+        .error-message {
+            text-align: center;
+            padding: 40px;
+            color: #ff4444;
+            font-size: 16px;
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 32px;
+            }
+            
+            .leaderboard-card {
+                padding: 20px;
+            }
+            
+            .rank-item {
+                flex-wrap: wrap;
+            }
+            
+            .player-stats {
+                width: 100%;
+                text-align: left;
+                margin-top: 10px;
+                margin-left: 65px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-button" onclick="window.location.href='index.html'">← Назад</button>
+            <div class="your-stats">
+                Ваши клики: <span id="yourClicks">0</span>
+            </div>
+        </div>
+        
+        <div class="title-section">
+            <h1>🏆 Топы игроков</h1>
+            <p class="subtitle">Лучшие кликеры Сырника</p>
+        </div>
+        
+        <div class="leaderboard-card">
+            <div class="leaderboard-header">
+                <div class="leaderboard-title">По общему количеству кликов</div>
+                <button class="refresh-button" onclick="loadLeaderboard()">🔄 Обновить</button>
+            </div>
+            <div id="leaderboard">
+                <div class="loading">
+                    <p>Загрузка топа игроков...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPlayerName = '';
+
+        // Загрузка данных игрока
+        function loadPlayerData() {
+            const savedGame = localStorage.getItem('cheesecakeClicker');
+            if (savedGame) {
+                const gameData = JSON.parse(savedGame);
+                document.getElementById('yourClicks').textContent = 
+                    (gameData.totalClicks || 0).toLocaleString('ru-RU');
+                currentPlayerName = gameData.playerName || '';
+            }
+        }
+
+        // Получение имени персонажа
+        function getCharacterName(characterId) {
+            const characters = {
+                'Bublick': 'Сырник',
+                'bublick': 'Сырник',
+                'marusya': 'Маруся Срульник',
+                'most': 'Мост'
+            };
+            return characters[characterId] || characterId;
+        }
+
+        // Загрузка топа с сервера
+        async function loadLeaderboard() {
+            const leaderboardDiv = document.getElementById('leaderboard');
+            leaderboardDiv.innerHTML = '<div class="loading"><p>Загрузка топа игроков...</p></div>';
+
+            try {
+                const response = await fetch('http://localhost:5000/get_leaderboard');
+                
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки');
+                }
+
+                const data = await response.json();
+                displayLeaderboard(data.leaderboard);
+            } catch (error) {
+                leaderboardDiv.innerHTML = `
+                    <div class="error-message">
+                        <div class="empty-icon">😔</div>
+                        <p>Не удалось загрузить топ игроков</p>
+                        <p style="margin-top: 10px; font-size: 14px;">Убедитесь, что сервер запущен</p>
+                        <p style="margin-top: 5px; font-size: 12px; color: #999;">python server.py</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Отображение топа
+        function displayLeaderboard(players) {
+            const leaderboardDiv = document.getElementById('leaderboard');
+
+            if (!players || players.length === 0) {
+                leaderboardDiv.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🎮</div>
+                        <p>Топ пока пуст</p>
+                        <p style="margin-top: 10px;">Будьте первым!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            players.forEach((player, index) => {
+                const rank = index + 1;
+                const isCurrentPlayer = player.name === currentPlayerName;
+                let rankDisplay = '';
+                let itemClass = 'rank-item';
+
+                if (rank === 1) {
+                    rankDisplay = '<div class="rank-medal">🥇</div>';
+                    itemClass += ' top1';
+                } else if (rank === 2) {
+                    rankDisplay = '<div class="rank-medal">🥈</div>';
+                    itemClass += ' top2';
+                } else if (rank === 3) {
+                    rankDisplay = '<div class="rank-medal">🥉</div>';
+                    itemClass += ' top3';
+                } else {
+                    rankDisplay = `<div class="rank-number">${rank}</div>`;
+                }
+
+                if (isCurrentPlayer) {
+                    itemClass += ' you';
+                }
+
+                html += `
+                    <div class="${itemClass}">
+                        ${rankDisplay}
+                        <div class="player-info">
+                            <div class="player-name">${player.name}${isCurrentPlayer ? ' (Вы)' : ''}</div>
+                            <div class="player-character">Персонаж: ${getCharacterName(player.character)}</div>
+                        </div>
+                        <div class="player-stats">
+                            <div class="stat-value">${player.totalClicks.toLocaleString('ru-RU')}</div>
+                            <div class="stat-label">Кликов</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            leaderboardDiv.innerHTML = html;
+
+            // Прокрутка к позиции игрока
+            if (currentPlayerName) {
+                setTimeout(() => {
+                    const youElement = document.querySelector('.rank-item.you');
+                    if (youElement) {
+                        youElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 100);
+            }
+        }
+
+        // Инициализация
+        loadPlayerData();
+        loadLeaderboard();
+
+        // Автообновление каждые 30 секунд
+        setInterval(loadLeaderboard, 30000);
+    </script>
+</body>
+</html>
